@@ -20,8 +20,11 @@
                         @foreach($posts as $post)
                             <h1>{{$post->title}}</h1>
                             <p>{{$post->content}}</p>
+                            <p>Autore: {{$post->user->name}}</p>
                             @auth
                                 @include('partials/deleteBtn',["id" => $post->id])
+                                <button type="button" class="btn btn-primary"><a class="text-light" href="{{ route('admin.edit', $post->id) }}">Modifica</a></button>
+                                <button type="button" class="btn btn-primary"><a class="text-light" href="{{ route('admin.show', $post->id) }}">Visualizza post</a></button>
                             @endauth
                         @endforeach
 

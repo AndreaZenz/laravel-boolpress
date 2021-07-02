@@ -13,12 +13,19 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, Post $post)
     {
-        $post = Post::all();
-        return view("admin.home", [
-            "posts" => $post
-        ]);
+        $user=$post->user;
+
+        $data = [
+            'posts' => Post::orderBy("created_at", "DESC")
+                ->where("user_id", $request->user()->id)
+                ->get(),
+                "user" =>$user
+        ];
+
+
+        return view("admin.home", $data);
     }
 
     /**
@@ -43,6 +50,7 @@ class PostController extends Controller
 
         $newPost = new Post();
         $newPost-> fill($newPostData);
+        $newPost-> user_id=$request->user()->id;
         $newPost-> save();
 
         return redirect()-> route('admin.index');
@@ -56,13 +64,14 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //$singleUser = User::find($user);
+        $user=$post->user;
         if(is_null($post)){
             abort(404);
         }
         
         return view('admin.show' , [
-            "post" => $post
+            "post" => $post,
+            "user" =>$user
         ]);
     }
 
@@ -100,7 +109,7 @@ class PostController extends Controller
 
         $post->update($formData);
 
-        return redirect()->route("admin.home", $post->id);
+        return redirect()->route("admin.index", $post->id);
     }
 
     /**

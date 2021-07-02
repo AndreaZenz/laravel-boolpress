@@ -2,5 +2,5 @@
     @csrf
     @method('DELETE')
 
-    <input type="submit" value="Cancella">
+    <input class="btn btn-danger" type="submit" value="Cancella">
 </form>

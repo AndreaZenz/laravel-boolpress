@@ -3,19 +3,24 @@
 @section('content')
 @include("partials.errorsAlert")
 
-<form action="{{ route('admin.update', $post->id) }}" method="post">
-    @csrf
+<div class="container">
+    <form action="{{ route('admin.update', $post->id) }}" method="post">
+        @csrf
 
-    @method('PATCH')
+        @method('PATCH')
 
-    <label for="title">Title</label>
-    <input type="text" name="title" id="title" value="{{ $post->title}}">
+        <div>
+            <label style="width:100px" for="title">Title</label>
+            <input type="text" name="title" id="title" value="{{ $post->title}}">
+        </div>
+        <div>
+            <label style="width:100px" for="content">Content</label>
+            <textarea type="content" name="content" id="content" value="{{ $post->content }}" cols="30" rows="10"></textarea>
+        </div>
 
-    <label for="content">content</label>
-    <input type="content" name="content" id="content" value="{{ $post->content }}">
-
-    <input type="submit" value="Salva">
-</form>
+        <input type="submit" value="Salva">
+    </form>
+</div>
 
 <script src={{asset('js/app.js')}}></script>
 
