@@ -18,9 +18,10 @@
                     <a href="{{route("admin.create")}}">Crea un post</a>
                     {{-- @dump($posts) --}}
                         @foreach($posts as $post)
-                            <h1>{{$post->title}}</h1>
-                            <p>{{$post->content}}</p>
+                            <h1>Titolo: {{$post->title}}</h1>
+                            <p>Contenuto: {{$post->content}}</p>
                             <p>Autore: {{$post->user->name}}</p>
+                            <p>Categoria :{{ $post->category ? $post->category->name : 'none' }}</p>
                             @auth
                                 @include('partials/deleteBtn',["id" => $post->id])
                                 <button type="button" class="btn btn-primary"><a class="text-light" href="{{ route('admin.edit', $post->id) }}">Modifica</a></button>

@@ -15,7 +15,23 @@
         </div>
         <div>
             <label style="width:100px" for="content">Content</label>
-            <textarea type="content" name="content" id="content" value="{{ $post->content }}" cols="30" rows="10"></textarea>
+            <textarea type="content" name="content" id="content" value="{{ $post->content }}" cols="30" rows="10">{{$post->content}}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Categoria</label>
+            <select name="category_id" class="form-control  @error('category_id') is-invalid @enderror">
+                <option value="">-- seleziona categoria --</option>
+                @foreach ($categories as $category)
+                    <option value="{{ $category->id }}" {{ $category->id == $post->category_id ? 'selected' : '' }}>
+                        {{ $category->name }} 
+                        
+                    </option>
+                @endforeach
+            </select>
+            @error('category_id')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
 
         <input type="submit" value="Salva">

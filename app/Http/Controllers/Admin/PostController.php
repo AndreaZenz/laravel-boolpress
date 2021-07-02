@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Category;
 use App\Http\Controllers\Controller;
 use App\Post;
 use Illuminate\Http\Request;
@@ -16,12 +17,15 @@ class PostController extends Controller
     public function index(Request $request, Post $post)
     {
         $user=$post->user;
+        
 
         $data = [
             'posts' => Post::orderBy("created_at", "DESC")
                 ->where("user_id", $request->user()->id)
                 ->get(),
-                "user" =>$user
+                "user" =>$user,
+                
+
         ];
 
 
@@ -35,7 +39,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view("admin.create");
+        $categories = Category::all();
+
+        return view('admin.create', ["categories" => $categories]);
     }
 
     /**
@@ -68,10 +74,12 @@ class PostController extends Controller
         if(is_null($post)){
             abort(404);
         }
+        $categories = Category::all();
         
         return view('admin.show' , [
             "post" => $post,
-            "user" =>$user
+            "user" =>$user,
+            "categories" => $categories
         ]);
     }
 
@@ -84,9 +92,14 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = Post::findOrFail($id);
-        return view("admin.edit", [
-            "post" => $post
-        ]);
+        $categories = Category::all();
+
+        $data = [ 
+            "post" => $post,
+            "categories" => $categories
+        ];
+
+        return view("admin.edit", $data);
     }
 
     /**
