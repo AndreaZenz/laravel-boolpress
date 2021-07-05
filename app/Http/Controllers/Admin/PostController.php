@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Category;
 use App\Http\Controllers\Controller;
 use App\Post;
+use App\Tag;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -17,17 +18,14 @@ class PostController extends Controller
     public function index(Request $request, Post $post)
     {
         $user=$post->user;
-        
 
         $data = [
             'posts' => Post::orderBy("created_at", "DESC")
                 ->where("user_id", $request->user()->id)
                 ->get(),
-                "user" =>$user,
-                
+                "user"=>$user,
 
         ];
-
 
         return view("admin.home", $data);
     }
@@ -40,8 +38,10 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('admin.create', ["categories" => $categories]);
+
+        return view('admin.create', ["categories" => $categories, "tags"=>$tags]);
     }
 
     /**
@@ -54,12 +54,15 @@ class PostController extends Controller
     {
         $newPostData = $request->all();
 
+
         $newPost = new Post();
         $newPost-> fill($newPostData);
         $newPost-> user_id=$request->user()->id;
         $newPost-> save();
+        $newPost->tags()->attach($newPostData["tags"]);
 
-        return redirect()-> route('admin.index');
+
+        return redirect()-> route('admin.show',$newPost->id);
     }
 
     /**
@@ -91,15 +94,13 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        $post = Post::findOrFail($id);
         $categories = Category::all();
 
-        $data = [ 
-            "post" => $post,
-            "categories" => $categories
-        ];
+        $post = Post::findOrFail($id);
 
-        return view("admin.edit", $data);
+        return view("admin.edit", [
+            "post" => $post
+        ],["categories" => $categories]);
     }
 
     /**
@@ -121,6 +122,8 @@ class PostController extends Controller
 
 
         $post->update($formData);
+
+
 
         return redirect()->route("admin.index", $post->id);
     }
