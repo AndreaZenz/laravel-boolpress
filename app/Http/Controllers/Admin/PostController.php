@@ -54,6 +54,11 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+
+            "image" => "nullable"
+
+        ]);
         
         $newPostData = $request->all();
         
