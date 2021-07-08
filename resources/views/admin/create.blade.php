@@ -6,7 +6,7 @@
 <div class="container">
 
     <a href="{{ route('admin.index') }}">Torna alla home</a>
-    <form action="{{ route('admin.store') }}" method="post">
+    <form action="{{ route('admin.store') }}" method="post" enctype="multipart/form-data">
         @csrf
 
         <div>
@@ -47,7 +47,7 @@
             @endforeach
 
         </div>
-
+        <input type="file" name="cover_url" class="form-control-life">
         <input type="submit" value="Invia">
     </form>
 

@@ -25,9 +25,9 @@ Route::prefix('admin')
     ->middleware('auth')
     ->name("admin.")
     ->group(function () {
-        Route::get('/', 'PostController@index')->name('index');
+        Route::get('/home', 'PostController@index')->name('index');
+        Route::get('/account', 'PostController@account')->name('account');
         Route::get('/tags', 'TagController@index')->name('tags.index');
-
         Route::post("/post", "PostController@store")->name("store");
 
         Route::get("/post/create", "PostController@create")->name("create");
@@ -40,9 +40,16 @@ Route::prefix('admin')
 
         Route::get('/post/{post}/edit', "PostController@edit")->name("edit");
 
-        //Genera tutte le rotte necessarie per la crud dei posts
+
     });
 
+
+
+
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 
 

@@ -4,7 +4,7 @@
 @include("partials.errorsAlert")
 
 <div class="container">
-    <form action="{{ route('admin.update', $post->id) }}" method="post">
+    <form action="{{ route('admin.update', $post->id) }}" method="post" enctype="multipart/form-data">
         @csrf
 
         @method('PATCH')
@@ -50,22 +50,8 @@
             @endforeach
 
         </div>
-        <div class="form-group">
-            <label>Tags</label><br>
 
-            @foreach($tags as $tag)
-
-            <div class="form-check form-check-inline">
-                <label class="form-check-label">
-                    <input name="tags[]" class="form-check-input" type="checkbox" value="{{ $tag->id }}">
-                    {{ $tag->name }}
-                </label>
-            </div>
-
-            @endforeach
-
-        </div>
-
+        <input type="file" name="cover_url"  class="form-control-life">
 
         <input type="submit" value="Salva">
     </form>

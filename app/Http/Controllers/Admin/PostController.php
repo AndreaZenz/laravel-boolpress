@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Post;
 use App\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -38,6 +39,7 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
+        
         $tags = Tag::all();
 
 
@@ -52,14 +54,18 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        
         $newPostData = $request->all();
-
-
+        
+        $storageImage = Storage::put("postCovers", $newPostData["cover_url"]);
+        $newPostData["cover_url"] = $storageImage;
+        
         $newPost = new Post();
         $newPost-> fill($newPostData);
         $newPost-> user_id=$request->user()->id;
         $newPost-> save();
         $newPost->tags()->attach($newPostData["tags"]);
+
 
 
         return redirect()-> route('admin.show',$newPost->id);
@@ -95,12 +101,12 @@ class PostController extends Controller
     public function edit($id)
     {
         $categories = Category::all();
-
+        $tags = Tag::all();
         $post = Post::findOrFail($id);
 
         return view("admin.edit", [
             "post" => $post
-        ],["categories" => $categories]);
+        ],["categories" => $categories, "tags"=>$tags]);
     }
 
     /**
@@ -119,11 +125,19 @@ class PostController extends Controller
             "title"=> "required|max:255",
             "content"=> "required",
         ]);
+        
+        if(key_exists("cover_url",$formData)){
+            if($post->cover_url){
+                Storage::delete($post->cover_url);
+            }
+        $storageImage = Storage::put("postCovers", $formData["cover_url"]);
 
+        $formData["cover_url"] = $storageImage;
+        }
 
         $post->update($formData);
 
-
+        $post->tags()->sync($formData["tags"]);
 
         return redirect()->route("admin.index", $post->id);
     }
@@ -142,4 +156,6 @@ class PostController extends Controller
 
         return redirect()->route("admin.index");
     }
+
+    
 }

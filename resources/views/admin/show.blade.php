@@ -5,7 +5,7 @@
 <div class="container">
 <a href="{{ route('admin.index') }}">Torna alla home</a>
     <ul>
-
+        <img src="{{ $post->cover_url ? asset('storage/' . $post->cover_url) : 'https://www.linga.org/site/photos/Largnewsimages/image-not-found.png'}}" class="img-fluid rounded-start" alt="..." style="max-height:150px;width: 100%; object-fit: cover">
         <li>ID: {{ $post->id }}</li>
         <li>TITOLO: {{ $post->title }}</li>
         <li>CONTENUTO: {{ $post->content }}</li>
