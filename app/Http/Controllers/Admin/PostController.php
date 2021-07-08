@@ -62,15 +62,23 @@ class PostController extends Controller
         
         $newPostData = $request->all();
         
-        $storageImage = Storage::put("postCovers", $newPostData["cover_url"]);
-        $newPostData["cover_url"] = $storageImage;
+        
         
         $newPost = new Post();
+
+        if (isset($newPostData["cover_url"])) {
+            $storageImage = Storage::put("postCover", $newPostData["cover_url"]);
+            $newPostData["cover_url"] = $storageImage;
+        }
+
         $newPost-> fill($newPostData);
         $newPost-> user_id=$request->user()->id;
         $newPost-> save();
         $newPost->tags()->attach($newPostData["tags"]);
-
+        
+        if (isset($newPostData['tags'])) {
+            $newPost->tags()->sync($newPostData['tags']);
+        }
 
 
         return redirect()-> route('admin.show',$newPost->id);
@@ -136,13 +144,14 @@ class PostController extends Controller
                 Storage::delete($post->cover_url);
             }
         $storageImage = Storage::put("postCovers", $formData["cover_url"]);
-
         $formData["cover_url"] = $storageImage;
         }
 
         $post->update($formData);
 
-        $post->tags()->sync($formData["tags"]);
+        if (isset($newPostData['tags'])) {
+            $post->tags()->sync($newPostData['tags']);
+        }
 
         return redirect()->route("admin.index", $post->id);
     }
